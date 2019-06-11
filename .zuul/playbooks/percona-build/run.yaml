@@ -1,0 +1,18 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Build percona-server
+      shell:
+        cmd: |
+          set -xe
+          apt-get update
+          apt-get install -y python python-pip libmysqlclient-dev cmake gcc bison ncurses-dev  libedit-dev  libaio-dev openssl libssl-dev libreadline6 libreadline6-dev libcurl4-openssl-dev
+          pip install mysql-python
+          mkdir build
+          cd build
+          cmake -H.. -B. -DDOWNLOAD_BOOST=1 -DWITH_BOOST=/opt/boost/ -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_CONFIG=mysql_release -DFEATURE_SET=community
+          make -j8
+
+          ./mysql-test/mysql-test-run.pl --force --max-test-fail=0 --parallel=auto --suite-timeout=1440
+        chdir: '{{ zuul.project.src_dir }}'
+        executable: /bin/bash
