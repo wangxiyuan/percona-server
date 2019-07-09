@@ -1,0 +1,17 @@
+- project:
+    name: theopenlab/percona-server
+    check:
+      jobs:
+        - percona-server-build-arm64
+            irrelevant-files:
+              - ^.gitignore$
+
+- job:
+    name: percona-server-build-arm64
+    parent: init-test
+    description: |
+      The percona-server build on ARM.
+    run: .zuul/playbooks/percona-build/run.yaml
+#    post-run: .zuul/playbooks/percona-build/post.yaml
+    timeout: 86400
+    nodeset: ubuntu-xenial-arm64

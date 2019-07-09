@@ -1,0 +1,9 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Build percona-server
+      shell:
+        cmd: |
+          cp -r ./build/mysql-test/var/log '{{ ansible_user_dir }}/workspace/test_results'
+        chdir: '{{ zuul.project.src_dir }}'
+        executable: /bin/bash
